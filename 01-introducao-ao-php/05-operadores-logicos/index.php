@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . "/../senac/senac.php";
+require __DIR__ . "/../../senac/senac.php";
 senacClassName("Operadores Lógicos");
 ?>
 
