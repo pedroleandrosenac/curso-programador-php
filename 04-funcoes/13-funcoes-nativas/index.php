@@ -3,25 +3,25 @@ require __DIR__ . "/../../senac/senac.php";
 senacClassName("Funções Nativas do PHP");
 ?>
 
-<?php senacClassSession("Funções de data — date(), time(), strtotime()", __LINE__); ?>
+<?php senacClassSession("Funções de data — date(), strtotime()", __LINE__); ?>
 
 <?php
 senacTag("date()", null, "https://www.php.net/manual/pt_BR/function.date.php");
-senacTag("time()", null, "https://www.php.net/manual/pt_BR/function.time.php");
 senacTag("strtotime()", null, "https://www.php.net/manual/pt_BR/function.strtotime.php");
 ?>
 
     <p>
         <strong>date()</strong> formata a data/hora atual do jeito que você
-        quiser. <strong>time()</strong> retorna o instante atual em segundos
-        (a base de qualquer cálculo com tempo). <strong>strtotime()</strong>
-        converte um texto de data em algo que o PHP consegue comparar.
+        quiser. <strong>strtotime()</strong> converte um texto de data em algo
+        que o PHP consegue comparar — as duas são das funções mais usadas em
+        qualquer sistema real, sempre que existe "data de cadastro", "data de
+        vencimento" ou "última atualização".
     </p>
 
     <div class="code">
         <?php
         echo htmlspecialchars(
-            '<?php
+                '<?php
 
 function registrarMatricula($nomeAluno) {
     $dataDeHoje = date("d/m/Y");
@@ -38,10 +38,10 @@ registrarMatricula("Carlos");
     <div class="code">
         <?php
         echo htmlspecialchars(
-            '<?php
+                '<?php
 
 $dataVencimento = strtotime("2026-09-10");
-$hoje = time();
+$hoje = strtotime(date("Y-m-d"));
 
 if ($dataVencimento < $hoje) {
     echo "Mensalidade vencida!";
@@ -55,93 +55,150 @@ if ($dataVencimento < $hoje) {
     </div>
 
 <?php
-senacAlert("strtotime() e time() sempre trabalham com segundos — por isso dá pra comparar as duas datas direto com < ou >, como em qualquer outro número.", "info");
+senacAlert("strtotime() sempre converte para segundos — por isso dá pra comparar duas datas direto com < ou >, como em qualquer outro número.", "info");
 ?>
 
-<?php senacClassSession("Funções matemáticas — round(), ceil(), floor(), abs()", __LINE__, "orange"); ?>
+<?php senacClassSession("Arrays — count() e in_array()", __LINE__, "orange"); ?>
 
 <?php
-senacTag("round()", null, "https://www.php.net/manual/pt_BR/function.round.php");
-senacTag("ceil()", null, "https://www.php.net/manual/pt_BR/function.ceil.php");
-senacTag("floor()", null, "https://www.php.net/manual/pt_BR/function.floor.php");
-senacTag("abs()", null, "https://www.php.net/manual/pt_BR/function.abs.php");
+senacTag("count()", null, "https://www.php.net/manual/pt_BR/function.count.php");
+senacTag("in_array()", null, "https://www.php.net/manual/pt_BR/function.in-array.php");
 ?>
 
-    <p><strong>round()</strong> arredonda para o mais próximo:</p>
+    <p>
+        <strong>count()</strong> conta quantos itens existem num array.
+        <strong>in_array()</strong> verifica se um valor específico está
+        presente na lista, devolvendo true ou false.
+    </p>
 
     <div class="code">
         <?php
         echo htmlspecialchars(
-            '<?php
+                '<?php
 
-echo round(4.495, 2); // 4.5 — resolve aquele preço "estranho" do saco de ração!
+$produtosEmEstoque = ["Ração", "Coleira", "Shampoo", "Brinquedo"];
 
-?>'
-        );
-        ?>
-    </div>
+echo "Total de produtos cadastrados: " . count($produtosEmEstoque);
 
-    <p><strong>ceil()</strong> sempre arredonda para cima — útil para calcular quantas caixas são necessárias:</p>
-
-    <div class="code">
-        <?php
-        echo htmlspecialchars(
-            '<?php
-
-function calcularCaixasNecessarias($totalDeItens, $itensPorCaixa) {
-    return ceil($totalDeItens / $itensPorCaixa);
+if (in_array("Coleira", $produtosEmEstoque)) {
+    echo "Coleira está disponível no estoque.";
+} else {
+    echo "Coleira não encontrada no estoque.";
 }
 
-echo calcularCaixasNecessarias(25, 6); // 5 caixas — mesmo sobrando só 1 item, precisa de mais uma caixa inteira
-
 ?>'
         );
         ?>
     </div>
 
-    <p><strong>floor()</strong> sempre arredonda para baixo — útil para calcular quantos meses inteiros um saldo cobre:</p>
+<?php
+senacAlert("in_array() é muito usado para validar se um valor digitado pelo usuário é uma opção válida — por exemplo, conferir se a categoria escolhida realmente existe na lista de categorias do sistema.", "info");
+?>
+
+<?php senacClassSession("Validação — isset() e empty()", __LINE__); ?>
+
+<?php
+senacTag("isset()", null, "https://www.php.net/manual/pt_BR/function.isset.php");
+senacTag("empty()", null, "https://www.php.net/manual/pt_BR/function.empty.php");
+?>
+
+    <p>
+        <strong>isset()</strong> verifica se uma variável existe e não é nula.
+        <strong>empty()</strong> verifica se uma variável está vazia (string
+        vazia, zero, ou não definida). Praticamente toda função que recebe
+        dado de um formulário usa uma dessas duas, para não deixar passar
+        campo em branco.
+    </p>
 
     <div class="code">
         <?php
         echo htmlspecialchars(
-            '<?php
+                '<?php
 
-function mesesCobertos($saldoDisponivel, $valorMensalidade) {
-    return floor($saldoDisponivel / $valorMensalidade);
+function verificarCadastroCompleto($nome, $email) {
+    if (empty($nome) || empty($email)) {
+        return "Preencha todos os campos obrigatórios.";
+    }
+    return "Cadastro completo!";
 }
 
-echo mesesCobertos(500, 120); // 4 meses (sobra um pouco, mas não fecha o 5º mês inteiro)
+echo verificarCadastroCompleto("Maria", "maria@email.com");
+echo verificarCadastroCompleto("", "joao@email.com");
 
 ?>'
         );
         ?>
     </div>
 
-    <p><strong>abs()</strong> sempre devolve o valor positivo — útil para medir uma diferença, não importando o sinal:</p>
+<?php
+senacAlert("empty(\"0\") e empty(0) retornam true — cuidado ao validar campos que podem legitimamente valer zero (como quantidade em estoque). Nesses casos, isset() costuma ser mais seguro.", "info");
+?>
+
+<?php senacClassSession("Formatação — number_format()", __LINE__, "orange"); ?>
+
+<?php senacTag("number_format()", null, "https://www.php.net/manual/pt_BR/function.number-format.php"); ?>
+
+    <p>
+        <strong>number_format()</strong> formata um número no padrão de
+        exibição desejado — essencial para mostrar valores em dinheiro do
+        jeito que as pessoas estão acostumadas a ler.
+    </p>
 
     <div class="code">
         <?php
         echo htmlspecialchars(
-            '<?php
+                '<?php
 
-$estoqueEsperado = 50;
-$estoqueContado = 47;
+$precoDoProduto = 1234.5;
 
-$diferenca = abs($estoqueEsperado - $estoqueContado);
-
-echo "Diferença no estoque: $diferenca unidades";
+echo number_format($precoDoProduto, 2, ",", "."); // 1.234,50
 
 ?>'
         );
         ?>
     </div>
+
+<?php
+senacAlert("Os parâmetros são: quantidade de casas decimais, símbolo decimal e separador de milhar — number_format(valor, 2, \",\", \".\") é o padrão brasileiro de dinheiro.", "info");
+?>
+
+<?php senacClassSession("Segurança — htmlspecialchars()", __LINE__); ?>
+
+<?php senacTag("htmlspecialchars()", null, "https://www.php.net/manual/pt_BR/function.htmlspecialchars.php"); ?>
+
+    <p>
+        <strong>htmlspecialchars()</strong> converte caracteres especiais de
+        HTML em texto seguro para exibir na tela — evita que alguém digite
+        código malicioso num formulário e ele "execute" quando reaparecer na
+        página. É a mesma função que já protege os blocos de código que vocês
+        veem nas telas de aula.
+    </p>
+
+    <div class="code">
+        <?php
+        echo htmlspecialchars(
+                '<?php
+
+$comentarioDoUsuario = "<script>alert(\"hack\")</script>";
+
+echo htmlspecialchars($comentarioDoUsuario);
+// exibe o texto literal na tela, em vez de executar o script
+
+?>'
+        );
+        ?>
+    </div>
+
+<?php
+senacAlert("Regra prática: todo dado que veio do usuário e vai ser exibido de volta na tela deve passar por htmlspecialchars() antes do echo.", "accept");
+?>
 
 <?php senacClassSession("Exercício prático — usando funções nativas", __LINE__); ?>
 
     <ul>
-        <li><strong>formatarDataDeCadastro()</strong> — retorna a data de hoje formatada como "dd/mm/aaaa"</li>
-        <li><strong>calcularCaixasNecessarias($totalDeItens, $itensPorCaixa)</strong> — usando ceil()</li>
-        <li><strong>arredondarPreco($precoComCasasDecimaisEstranhas)</strong> — usando round() com 2 casas decimais</li>
+        <li><strong>verificarCadastroCompleto($nome, $email)</strong> — usando empty()</li>
+        <li><strong>contarProdutosDisponiveis($produtos)</strong> — usando count()</li>
+        <li><strong>formatarPrecoParaExibicao($valor)</strong> — usando number_format()</li>
     </ul>
 
 <?php
